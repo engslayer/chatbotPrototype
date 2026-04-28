@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# URLs de tu sitio web (¡CAMBIA ESTAS POR LAS TUYAS!)
+# URLs del sitio web
 URLS = [
     # "https://tusitioweb.com",
     # "https://tusitioweb.com/servicios",
@@ -25,7 +25,7 @@ URLS = [
 ]
 
 def main():
-    print("🕷️ Iniciando scraping del sitio web...")
+    print("Iniciando scraping del sitio web...")
     
     # 1. Cargar documentos desde las URLs
     loader = WebBaseLoader(URLS)

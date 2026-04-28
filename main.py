@@ -65,23 +65,23 @@ def clean_qwen3_response(text):
 # CONFIGURACIÓN
 # ─────────────────────────────────────────────
 
-print("🔧 Cargando embeddings...")
+print(" Cargando embeddings...")
 embeddings = HuggingFaceEmbeddings(
     model_name="sentence-transformers/all-MiniLM-L6-v2"
 )
 
-print("🔧 Conectando a ChromaDB...")
+print(" Conectando a ChromaDB...")
 vectorstore = Chroma(
     persist_directory="./chroma_db",
     embedding_function=embeddings
 )
 
 doc_count = vectorstore._collection.count()
-print(f"📊 Documentos en ChromaDB: {doc_count}")
+print(f" Documentos en ChromaDB: {doc_count}")
 
 retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
 
-print("🔧 Configurando Groq API con Qwen3-32B...")
+print(" Configurando Groq API con Qwen3-32B...")
 groq_key = os.getenv("GROQ_API_KEY")
 
 llm = ChatGroq(
@@ -119,25 +119,25 @@ prompt = ChatPromptTemplate.from_messages([
 # ─────────────────────────────────────────────
 
 def rag_chain(input_text):
-    print(f"\n🔍 [DEBUG] Pregunta: {input_text}")
+    print(f"\n [DEBUG] Pregunta: {input_text}")
     
     docs = retriever.invoke(input_text)
-    print(f"📄 Documentos encontrados: {len(docs)}")
+    print(f" Documentos encontrados: {len(docs)}")
     
     if len(docs) == 0:
         return "Lo siento, no encontré información relevante."
     
     context = "\n\n".join([doc.page_content for doc in docs])
-    print(f"📝 Contexto: {len(context)} caracteres")
+    print(f" Contexto: {len(context)} caracteres")
     
     full_prompt = prompt.format(context=context, input=input_text)
     
-    print("🤖 Llamando a Qwen3-32B...")
+    print(" Llamando a Qwen3-32B...")
     response = llm.invoke(full_prompt)
     
     return response.content
 
-print("\n✅ ¡Chatbot Qwen3 listo!\n")
+print("\n ¡Chatbot Qwen3 listo!\n")
 
 # ─────────────────────────────────────────────
 # MODELOS
@@ -161,20 +161,20 @@ async def root():
 async def chat(request: ChatRequest):
     try:
         print(f"\n{'='*50}")
-        print(f"📨 Nueva petición /chat")
+        print(f"Nueva petición /chat")
         
         answer = rag_chain(request.message)
         answer = clean_qwen3_response(answer)  # ← LIMPIAR RESPUESTA QWEN3
         
-        print(f"✅ Respuesta limpia enviada")
+        print(f"Respuesta limpia enviada")
         print(f"{'='*50}\n")
         
         return ChatResponse(response=answer)
     except Exception as e:
-        print(f"\n❌ {'='*50}")
-        print(f"❌ ERROR EN /chat: {str(e)}")
+        print(f"\n {'='*50}")
+        print(f" ERROR EN /chat: {str(e)}")
         traceback.print_exc()
-        print(f"❌ {'='*50}\n")
+        print(f" {'='*50}\n")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/health")
@@ -184,3 +184,4 @@ async def health():
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=False)
+    #Localhost

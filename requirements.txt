@@ -12,5 +12,3 @@ python-dotenv>=1.0.0
 pydantic>=2.5.0
 huggingface-hub>=0.20.0
 langchain-huggingface>=0.0.3
-
-
